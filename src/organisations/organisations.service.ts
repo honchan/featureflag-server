@@ -9,13 +9,12 @@ import { CreateOrganisationDto } from './dto/createOrganisation.dto';
 export class OrganisationsService {
   constructor(
     @InjectRepository(Organisation)
-    private organisationsRepository: Repository<Organisation>,
+    private readonly organisationsRepository: Repository<Organisation>,
   ) {}
 
   async createOrganisation(organisation: CreateOrganisationDto) {
-    const newOrganisation = this.organisationsRepository.create(organisation);
+    const newOrganisation = await this.organisationsRepository.create(organisation);
     await this.organisationsRepository.save(newOrganisation);
-
     return newOrganisation;
   }
 }
