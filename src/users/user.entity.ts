@@ -13,5 +13,5 @@ export class User {
     () => Organisation,
     (organisation: Organisation) => organisation.users,
   )
-  public organisationId: number;
+  public organisation: number;
 }
