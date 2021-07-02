@@ -17,4 +17,8 @@ export class OrganisationsService {
     await this.organisationsRepository.save(newOrganisation);
     return newOrganisation;
   }
+
+  listOrganisations() {
+    return this.organisationsRepository.find();
+  }
 }
