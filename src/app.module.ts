@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from './database/database.module';
 import { OrganisationsModule } from './organisations/organisations.module';
 import { UsersModule } from './users/users.module';
+import { FeatureFlagsModule } from './featureflags/featureflags.module'
 
 @Module({
   imports: [
@@ -11,6 +12,7 @@ import { UsersModule } from './users/users.module';
     DatabaseModule,
     OrganisationsModule,
     UsersModule,
+    FeatureFlagsModule,
   ],
   controllers: [],
   providers: [],
