@@ -7,7 +7,7 @@ export class FeatureFlagsController {
   constructor(private readonly featureFlagsService: FeatureFlagsService) {}
 
   @Post()
-  async createFeatureFlag(@Body() featureFlag: CreateFeatureFlagDto) {
+  createFeatureFlag(@Body() featureFlag: CreateFeatureFlagDto) {
     return this.featureFlagsService.createFeatureFlag(featureFlag);
   }
 }

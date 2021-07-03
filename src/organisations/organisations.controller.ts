@@ -8,12 +8,12 @@ export class OrganisationsController {
   constructor(private readonly organisationsService: OrganisationsService) {}
 
   @Get()
-  async listOrganisations() {
+  listOrganisations() {
     return this.organisationsService.listOrganisations();
   }
 
   @Post()
-  async createOrganisation(@Body() organisation: CreateOrganisationDto) {
+  createOrganisation(@Body() organisation: CreateOrganisationDto) {
     return this.organisationsService.createOrganisation(organisation);
   }
 }
