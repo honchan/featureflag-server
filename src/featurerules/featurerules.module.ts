@@ -1,12 +1,18 @@
 import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { FeatureFlag } from 'src/featureflags/featureflag.entity';
-import { FeatureFlagsModule } from 'src/featureflags/featureflags.module';
-import { DefaultFeatureRule } from './default-rule.entity';
+import { DefaultFeatureRule } from './rules/default-rule.entity';
 import { FeatureRulesService } from './featurerules.service';
+import { WhitelistFeatureRule } from './rules/whitelist-rule.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([DefaultFeatureRule, FeatureFlag])],
+  imports: [
+    TypeOrmModule.forFeature([
+      WhitelistFeatureRule,
+      DefaultFeatureRule,
+      FeatureFlag,
+    ]),
+  ],
   controllers: [],
   providers: [FeatureRulesService],
   exports: [FeatureRulesService],
