@@ -6,7 +6,6 @@ import { FeatureFlag } from "./featureflag.entity";
 
 @Injectable()
 export class FeatureFlagsService {
-
   constructor(
     @InjectRepository(FeatureFlag)
     private readonly featureFlagsRepository: Repository<FeatureFlag>,
