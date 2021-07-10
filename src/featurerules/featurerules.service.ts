@@ -8,6 +8,7 @@ import {
   FeatureRuleTypes,
   FeatureRulePriorities,
 } from './featurerules.constants';
+import { OnetimeFeatureRule } from "./rules/onetime-rule.entity";
 
 @Injectable()
 export class FeatureRulesService {
@@ -16,9 +17,26 @@ export class FeatureRulesService {
     private readonly whitelistFeatureRuleRepository: Repository<WhitelistFeatureRule>,
     @InjectRepository(DefaultFeatureRule)
     private readonly defaultFeatureRuleRespository: Repository<DefaultFeatureRule>,
+    @InjectRepository(OnetimeFeatureRule)
+    private readonly onetimeFeatureRuleRepository: Repository<OnetimeFeatureRule>,
     @InjectRepository(FeatureFlag)
     private readonly featureFlagRepository: Repository<FeatureFlag>,
   ) {}
+
+  async createOnetimeRule(featureFlagId: number) {
+    const newRule = await this.onetimeFeatureRuleRepository.create({
+      type: FeatureRuleTypes.ONETIME,
+      priority: FeatureRulePriorities.ONETIME,
+      enabled: false,
+      blocked: [],
+    });
+
+    await this.onetimeFeatureRuleRepository.save(newRule);
+    await this.featureFlagRepository.update(
+      { id: featureFlagId },
+      { onetimeFeatureRule: newRule },
+    );
+  }
 
   async createDefaultRule(featureFlagId: number) {
     const newRule = await this.defaultFeatureRuleRespository.create({
@@ -53,5 +71,6 @@ export class FeatureRulesService {
   createFeatureRules(featureFlagId: number) {
     this.createDefaultRule(featureFlagId);
     this.createWhitelistRule(featureFlagId);
+    this.createOnetimeRule(featureFlagId);
   }
 }

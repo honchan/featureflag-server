@@ -1,4 +1,5 @@
 import { DefaultFeatureRule } from 'src/featurerules/rules/default-rule.entity';
+import { OnetimeFeatureRule } from 'src/featurerules/rules/onetime-rule.entity';
 import { WhitelistFeatureRule } from 'src/featurerules/rules/whitelist-rule.entity';
 import { Organisation } from 'src/organisations/organisation.entity';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToOne, JoinColumn } from 'typeorm';
@@ -27,4 +28,8 @@ export class FeatureFlag {
   @OneToOne(() => WhitelistFeatureRule)
   @JoinColumn()
   public whitelistFeatureRule: WhitelistFeatureRule;
+
+  @OneToOne(() => OnetimeFeatureRule)
+  @JoinColumn()
+  public onetimeFeatureRule: OnetimeFeatureRule;
 }
