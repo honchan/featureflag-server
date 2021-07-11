@@ -21,15 +21,15 @@ export class FeatureFlag {
   )
   public organisation: number;
 
-  @OneToOne(() => DefaultFeatureRule)
+  @OneToOne(() => DefaultFeatureRule, { eager: true })
   @JoinColumn()
   public defaultFeatureRule: DefaultFeatureRule;
 
-  @OneToOne(() => WhitelistFeatureRule)
+  @OneToOne(() => WhitelistFeatureRule, { eager: true })
   @JoinColumn()
   public whitelistFeatureRule: WhitelistFeatureRule;
 
-  @OneToOne(() => OnetimeFeatureRule)
+  @OneToOne(() => OnetimeFeatureRule, { eager: true })
   @JoinColumn()
   public onetimeFeatureRule: OnetimeFeatureRule;
 }
