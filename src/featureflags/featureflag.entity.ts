@@ -21,15 +21,24 @@ export class FeatureFlag {
   )
   public organisation: number;
 
-  @OneToOne(() => DefaultFeatureRule, { eager: true })
-  @JoinColumn()
+  @Column({ name: 'default_feature_rule_id' })
+  defaultFeatureRuleId: number;
+
+  @Column({ name: 'whitelist_feature_rule_id' })
+  whitelistFeatureRuleId: number;
+
+  @Column({ name: 'onetime_feature_rule_id' })
+  onetimeFeatureRuleId: number;
+
+  @OneToOne(() => DefaultFeatureRule)
+  @JoinColumn({ name: 'default_feature_rule_id' })
   public defaultFeatureRule: DefaultFeatureRule;
 
-  @OneToOne(() => WhitelistFeatureRule, { eager: true })
-  @JoinColumn()
+  @OneToOne(() => WhitelistFeatureRule)
+  @JoinColumn({ name: 'whitelist_feature_rule_id' })
   public whitelistFeatureRule: WhitelistFeatureRule;
 
-  @OneToOne(() => OnetimeFeatureRule, { eager: true })
-  @JoinColumn()
+  @OneToOne(() => OnetimeFeatureRule)
+  @JoinColumn({ name: 'onetime_feature_rule_id' })
   public onetimeFeatureRule: OnetimeFeatureRule;
 }

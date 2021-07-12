@@ -11,3 +11,9 @@ export enum FeatureRulePriorities {
   SPLIT = 3,
   ONETIME = 3,
 }
+
+export interface FeatureRulesIds {
+  defaultFeatureRuleId: number;
+  whitelistFeatureRuleId: number;
+  onetimeFeatureRuleId: number;
+}
