@@ -9,6 +9,7 @@ import {
   FeatureRulePriorities,
 } from './featurerules.constants';
 import { OnetimeFeatureRule } from "./rules/onetime-rule.entity";
+import { UpdateDefaultFeatureRuleDto } from "./dto/updateDefaultFeatureRuleDto";
 
 @Injectable()
 export class FeatureRulesService {
@@ -72,5 +73,17 @@ export class FeatureRulesService {
     this.createDefaultRule(featureFlagId);
     this.createWhitelistRule(featureFlagId);
     this.createOnetimeRule(featureFlagId);
+  }
+
+  async updateDefaultFeatureRule(
+    updateDefaultFeatureRuleDto: UpdateDefaultFeatureRuleDto,
+    featureFlagId: number,
+  ) {
+    const { defaultFeatureRule } = await this.featureFlagRepository.findOne(featureFlagId);
+
+    await this.defaultFeatureRuleRespository.update(
+      { id: defaultFeatureRule.id },
+      updateDefaultFeatureRuleDto,
+    );
   }
 }
