@@ -7,6 +7,7 @@ import { WhitelistFeatureRule } from "./rules/whitelist-rule.entity";
 import {
   FeatureRuleTypes,
   FeatureRulePriorities,
+  FeatureRulesIds,
 } from './featurerules.constants';
 import { OnetimeFeatureRule } from "./rules/onetime-rule.entity";
 import { UpdateDefaultFeatureRuleDto } from "./dto/updateDefaultFeatureRuleDto";
@@ -24,7 +25,7 @@ export class FeatureRulesService {
     private readonly featureFlagRepository: Repository<FeatureFlag>,
   ) {}
 
-  async createOnetimeRule(featureFlagId: number) {
+  async createOnetimeRule() {
     const newRule = await this.onetimeFeatureRuleRepository.create({
       type: FeatureRuleTypes.ONETIME,
       priority: FeatureRulePriorities.ONETIME,
@@ -33,13 +34,10 @@ export class FeatureRulesService {
     });
 
     await this.onetimeFeatureRuleRepository.save(newRule);
-    await this.featureFlagRepository.update(
-      { id: featureFlagId },
-      { onetimeFeatureRule: newRule },
-    );
+    return newRule.id;
   }
 
-  async createDefaultRule(featureFlagId: number) {
+  async createDefaultRule() {
     const newRule = await this.defaultFeatureRuleRespository.create({
       type: FeatureRuleTypes.DEFAULT,
       priority: FeatureRulePriorities.DEFAULT,
@@ -47,13 +45,10 @@ export class FeatureRulesService {
     });
 
     await this.defaultFeatureRuleRespository.save(newRule);
-    await this.featureFlagRepository.update(
-      { id: featureFlagId },
-      { defaultFeatureRule: newRule },
-    );
+    return newRule.id;
   }
 
-  async createWhitelistRule(featureFlagId: number) {
+  async createWhitelistRule() {
     const newRule = await this.whitelistFeatureRuleRepository.create({
       type: FeatureRuleTypes.WHITELIST,
       priority: FeatureRulePriorities.WHITELIST,
@@ -63,26 +58,28 @@ export class FeatureRulesService {
     });
 
     await this.whitelistFeatureRuleRepository.save(newRule);
-    await this.featureFlagRepository.update(
-      { id: featureFlagId },
-      { whitelistFeatureRule: newRule },
-    );
+    return newRule.id;
   }
 
-  createFeatureRules(featureFlagId: number) {
-    this.createDefaultRule(featureFlagId);
-    this.createWhitelistRule(featureFlagId);
-    this.createOnetimeRule(featureFlagId);
+  async createFeatureRules() : Promise<FeatureRulesIds> {
+    const defaultFeatureRuleId = await this.createDefaultRule();
+    const whitelistFeatureRuleId = await this.createWhitelistRule();
+    const onetimeFeatureRuleId = await this.createOnetimeRule();
+
+    return {
+      defaultFeatureRuleId,
+      whitelistFeatureRuleId,
+      onetimeFeatureRuleId,
+    }
   }
 
   async updateDefaultFeatureRule(
     updateDefaultFeatureRuleDto: UpdateDefaultFeatureRuleDto,
     featureFlagId: number,
   ) {
-    const { defaultFeatureRule } = await this.featureFlagRepository.findOne(featureFlagId);
-
+    const featureFlag = await this.featureFlagRepository.findOne(featureFlagId);
     await this.defaultFeatureRuleRespository.update(
-      { id: defaultFeatureRule.id },
+      { id: featureFlag.defaultFeatureRuleId },
       updateDefaultFeatureRuleDto,
     );
   }

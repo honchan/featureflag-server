@@ -3,6 +3,7 @@ import { FeatureRulesService } from "src/featurerules/featurerules.service";
 import { CreateFeatureFlagDto } from "./dto/createFeatureFlag.dto";
 import { FeatureFlagsService } from "./featureflags.service";
 import { UpdateDefaultFeatureRuleDto } from '../featurerules/dto/updateDefaultFeatureRuleDto'
+import { FeatureRulesIds } from "src/featurerules/featurerules.constants";
 
 @Controller('featureflags')
 export class FeatureFlagsController {
@@ -13,8 +14,11 @@ export class FeatureFlagsController {
 
   @Post()
   async createFeatureFlag(@Body() featureFlag: CreateFeatureFlagDto) {
-    const newFlag = await this.featureFlagsService.createFeatureFlag(featureFlag);
-    await this.featureRulesService.createFeatureRules(newFlag.id);
+    const featureRules: FeatureRulesIds = await this.featureRulesService.createFeatureRules();
+    const newFlag = await this.featureFlagsService.createFeatureFlag(
+      featureFlag,
+      featureRules,
+    );
     return newFlag;
   }
 
