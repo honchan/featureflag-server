@@ -4,6 +4,7 @@ import { CreateFeatureFlagDto } from "./dto/createFeatureFlag.dto";
 import { FeatureFlagsService } from "./featureflags.service";
 import { UpdateDefaultFeatureRuleDto } from '../featurerules/dto/updateDefaultFeatureRuleDto'
 import { FeatureRulesIds } from "src/featurerules/featurerules.constants";
+import { UpdateWhitelistFeatureRuleDto } from "src/featurerules/dto/updateWhitelistFeatureRuleDto";
 
 @Controller('featureflags')
 export class FeatureFlagsController {
@@ -32,7 +33,21 @@ export class FeatureFlagsController {
       updateDefaultFeatureRuleDto,
       parseInt(id),
     );
+  }
 
-    return;
+  @Put(':id/whitelist')
+  @HttpCode(200)
+  async updateWhitelistFeatureRule(
+    @Param('id') id: string,
+    @Body() updateWhitelistFeatureRuleDto: UpdateWhitelistFeatureRuleDto,
+  ) {
+    await this.featureRulesService.updateWhitelistFeatureRule(
+      updateWhitelistFeatureRuleDto,
+      parseInt(id),
+    );
+    // await this.featureRulesService.updateDefaultFeatureRule(
+    //   updateDefaultFeatureRuleDto,
+    //   parseInt(id),
+    // );
   }
 }

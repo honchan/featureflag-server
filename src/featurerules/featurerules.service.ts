@@ -11,6 +11,7 @@ import {
 } from './featurerules.constants';
 import { OnetimeFeatureRule } from "./rules/onetime-rule.entity";
 import { UpdateDefaultFeatureRuleDto } from "./dto/updateDefaultFeatureRuleDto";
+import { UpdateWhitelistFeatureRuleDto } from "./dto/updateWhitelistFeatureRuleDto";
 
 @Injectable()
 export class FeatureRulesService {
@@ -81,6 +82,29 @@ export class FeatureRulesService {
     await this.defaultFeatureRuleRespository.update(
       { id: featureFlag.defaultFeatureRuleId },
       updateDefaultFeatureRuleDto,
+    );
+  }
+
+  async updateWhitelistFeatureRule(
+    updateWhitelistFeatureRuleDto: UpdateWhitelistFeatureRuleDto,
+    featureFlagId: number,
+  ) {
+    const featureFlag = await this.featureFlagRepository.findOne(featureFlagId);
+
+    const uniqueOnList = updateWhitelistFeatureRuleDto
+      ? [...new Set(updateWhitelistFeatureRuleDto.onList)]
+      : [];
+    const uniqueOffList = updateWhitelistFeatureRuleDto
+      ? [...new Set(updateWhitelistFeatureRuleDto.offList)]
+      : [];
+
+    await this.whitelistFeatureRuleRepository.update(
+      { id: featureFlag.whitelistFeatureRuleId },
+      {
+        enabled: updateWhitelistFeatureRuleDto.enabled,
+        onList: uniqueOnList,
+        offList: uniqueOffList,
+      },
     );
   }
 }
