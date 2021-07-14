@@ -12,6 +12,7 @@ import {
 import { OnetimeFeatureRule } from "./rules/onetime-rule.entity";
 import { UpdateDefaultFeatureRuleDto } from "./dto/updateDefaultFeatureRuleDto";
 import { UpdateWhitelistFeatureRuleDto } from "./dto/updateWhitelistFeatureRuleDto";
+import { UpdateOnetimeFeatureRuleDto } from "./dto/updateOnetimeFeatureRuleDto";
 
 @Injectable()
 export class FeatureRulesService {
@@ -78,9 +79,9 @@ export class FeatureRulesService {
     updateDefaultFeatureRuleDto: UpdateDefaultFeatureRuleDto,
     featureFlagId: number,
   ) {
-    const featureFlag = await this.featureFlagRepository.findOne(featureFlagId);
+    const { defaultFeatureRuleId } = await this.featureFlagRepository.findOne(featureFlagId);
     await this.defaultFeatureRuleRespository.update(
-      { id: featureFlag.defaultFeatureRuleId },
+      { id: defaultFeatureRuleId },
       updateDefaultFeatureRuleDto,
     );
   }
@@ -89,7 +90,7 @@ export class FeatureRulesService {
     updateWhitelistFeatureRuleDto: UpdateWhitelistFeatureRuleDto,
     featureFlagId: number,
   ) {
-    const featureFlag = await this.featureFlagRepository.findOne(featureFlagId);
+    const { whitelistFeatureRuleId } = await this.featureFlagRepository.findOne(featureFlagId);
 
     const uniqueOnList = updateWhitelistFeatureRuleDto
       ? [...new Set(updateWhitelistFeatureRuleDto.onList)]
@@ -99,12 +100,30 @@ export class FeatureRulesService {
       : [];
 
     await this.whitelistFeatureRuleRepository.update(
-      { id: featureFlag.whitelistFeatureRuleId },
+      { id: whitelistFeatureRuleId },
       {
         enabled: updateWhitelistFeatureRuleDto.enabled,
         onList: uniqueOnList,
         offList: uniqueOffList,
       },
+    );
+  }
+
+  async updateOnetimeFeatureRule(
+    updateOnetimeFeatureRuleDto: UpdateOnetimeFeatureRuleDto,
+    featureFlagId: number,
+    reset: boolean,
+  ) {
+    const { onetimeFeatureRuleId } = await this.featureFlagRepository.findOne(featureFlagId);
+
+    const payload = {
+      ...updateOnetimeFeatureRuleDto,
+      ...(reset && { blocked: [] }),
+    };
+
+    await this.onetimeFeatureRuleRepository.update(
+      { id: onetimeFeatureRuleId },
+      payload,
     );
   }
 }

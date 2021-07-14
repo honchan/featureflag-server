@@ -1,10 +1,11 @@
-import { Controller, Post, Body, Put, Param, HttpCode } from "@nestjs/common";
+import { Controller, Post, Body, Put, Param, HttpCode, Query } from "@nestjs/common";
 import { FeatureRulesService } from "src/featurerules/featurerules.service";
 import { CreateFeatureFlagDto } from "./dto/createFeatureFlag.dto";
 import { FeatureFlagsService } from "./featureflags.service";
 import { UpdateDefaultFeatureRuleDto } from '../featurerules/dto/updateDefaultFeatureRuleDto'
 import { FeatureRulesIds } from "src/featurerules/featurerules.constants";
 import { UpdateWhitelistFeatureRuleDto } from "src/featurerules/dto/updateWhitelistFeatureRuleDto";
+import { UpdateOnetimeFeatureRuleDto } from "src/featurerules/dto/updateOnetimeFeatureRuleDto";
 
 @Controller('featureflags')
 export class FeatureFlagsController {
@@ -49,5 +50,21 @@ export class FeatureFlagsController {
     //   updateDefaultFeatureRuleDto,
     //   parseInt(id),
     // );
+  }
+
+  @Put(':id/onetime')
+  @HttpCode(200)
+  async updateOnetimeFeatureRule(
+    @Param('id') id: string,
+    @Body() updateOnetimeFeatureRuleDto: UpdateOnetimeFeatureRuleDto,
+    @Query('reset') reset: string,
+  ) {
+    const shouldReset = reset === 'true';
+    console.log('on etime controller')
+    await this.featureRulesService.updateOnetimeFeatureRule(
+      updateOnetimeFeatureRuleDto,
+      parseInt(id),
+      shouldReset,
+    );
   }
 }
