@@ -1,3 +1,5 @@
+import { Expose } from 'class-transformer';
+
 import { DefaultFeatureRule } from 'src/featurerules/rules/default-rule.entity';
 import { OnetimeFeatureRule } from 'src/featurerules/rules/onetime-rule.entity';
 import { WhitelistFeatureRule } from 'src/featurerules/rules/whitelist-rule.entity';
@@ -7,12 +9,15 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToOne, JoinColumn
 @Entity()
 export class FeatureFlag {
   @PrimaryGeneratedColumn()
+  @Expose()
   public id: number;
 
   @Column()
+  @Expose()
   public name: string;
 
   @Column()
+  @Expose()
   public description: string;
 
   @ManyToOne(
