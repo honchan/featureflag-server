@@ -3,7 +3,6 @@ import { ConfigModule } from '@nestjs/config';
 
 import { DatabaseModule } from './database/database.module';
 import { OrganisationsModule } from './organisations/organisations.module';
-import { UsersModule } from './users/users.module';
 import { FeatureFlagsModule } from './featureflags/featureflags.module'
 
 @Module({
@@ -11,7 +10,6 @@ import { FeatureFlagsModule } from './featureflags/featureflags.module'
     ConfigModule.forRoot({}),
     DatabaseModule,
     OrganisationsModule,
-    UsersModule,
     FeatureFlagsModule,
   ],
   controllers: [],
