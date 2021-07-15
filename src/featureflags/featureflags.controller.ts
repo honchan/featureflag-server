@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Put, Param, HttpCode, Query } from "@nestjs/common";
+import { Controller, Post, Body, Put, Param, HttpCode, Query, Get, SerializeOptions } from "@nestjs/common";
 import { FeatureRulesService } from "src/featurerules/featurerules.service";
 import { CreateFeatureFlagDto } from "./dto/createFeatureFlag.dto";
 import { FeatureFlagsService } from "./featureflags.service";
@@ -8,6 +8,9 @@ import { UpdateWhitelistFeatureRuleDto } from "src/featurerules/dto/updateWhitel
 import { UpdateOnetimeFeatureRuleDto } from "src/featurerules/dto/updateOnetimeFeatureRuleDto";
 
 @Controller('featureflags')
+@SerializeOptions({
+  strategy: 'excludeAll',
+})
 export class FeatureFlagsController {
   constructor(
     private readonly featureFlagsService: FeatureFlagsService,
@@ -66,5 +69,10 @@ export class FeatureFlagsController {
       parseInt(id),
       shouldReset,
     );
+  }
+
+  @Get(':id/featurerules')
+  async getFeatureRules(@Param('id') id: string) {
+    return this.featureRulesService.getFeatureRules(parseInt(id));
   }
 }

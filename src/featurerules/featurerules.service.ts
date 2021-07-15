@@ -126,4 +126,18 @@ export class FeatureRulesService {
       payload,
     );
   }
+
+  async getFeatureRules(featureFlagid: number) {
+    const {
+      defaultFeatureRuleId,
+      whitelistFeatureRuleId,
+      onetimeFeatureRuleId,
+    } = await this.featureFlagRepository.findOne(featureFlagid);
+
+    const defaultFeatureRule = await this.defaultFeatureRuleRespository.findOne(defaultFeatureRuleId)
+    const whitelistFeatureRule = await this.whitelistFeatureRuleRepository.findOne(whitelistFeatureRuleId)
+    const onetimeFeatureRule = await this.onetimeFeatureRuleRepository.findOne(onetimeFeatureRuleId)
+
+    return [defaultFeatureRule, whitelistFeatureRule, onetimeFeatureRule];
+  }
 }
