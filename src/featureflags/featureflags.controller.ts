@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Put, Param, HttpCode, Query, Get, SerializeOptions } from "@nestjs/common";
+import { Controller, Post, Body, Put, Param, HttpCode, Query, Get, SerializeOptions, HttpException, HttpStatus } from "@nestjs/common";
 import { FeatureRulesService } from "src/featurerules/featurerules.service";
 import { CreateFeatureFlagDto } from "./dto/createFeatureFlag.dto";
 import { FeatureFlagsService } from "./featureflags.service";
@@ -16,6 +16,26 @@ export class FeatureFlagsController {
     private readonly featureFlagsService: FeatureFlagsService,
     private readonly featureRulesService: FeatureRulesService,
   ) {}
+
+
+  @Get(':id/featurerules')
+  async getFeatureRules(@Param('id') id: string) {
+    return this.featureRulesService.getFeatureRules(parseInt(id));
+  }
+
+  @Get(':id')
+  async getFeatureFlagAccessForUser(
+    @Param('id') id: string,
+    @Query('user') user: string,
+  ) {
+    if (!id) throw new HttpException('Missing feature flag id', HttpStatus.AMBIGUOUS);
+    if (!user) throw new HttpException('Missing user / entity in query', HttpStatus.AMBIGUOUS);
+
+    return this.featureRulesService.getFeatureFlagAccessForUser(
+      parseInt(id),
+      user,
+    );
+  }
 
   @Post()
   async createFeatureFlag(@Body() featureFlag: CreateFeatureFlagDto) {
@@ -49,10 +69,6 @@ export class FeatureFlagsController {
       updateWhitelistFeatureRuleDto,
       parseInt(id),
     );
-    // await this.featureRulesService.updateDefaultFeatureRule(
-    //   updateDefaultFeatureRuleDto,
-    //   parseInt(id),
-    // );
   }
 
   @Put(':id/onetime')
@@ -69,10 +85,5 @@ export class FeatureFlagsController {
       parseInt(id),
       shouldReset,
     );
-  }
-
-  @Get(':id/featurerules')
-  async getFeatureRules(@Param('id') id: string) {
-    return this.featureRulesService.getFeatureRules(parseInt(id));
   }
 }
