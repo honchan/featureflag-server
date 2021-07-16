@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { FeatureFlag } from "src/featureflags/featureflag.entity";
-import { Repository } from "typeorm";
+import { Repository, TreeChildren } from "typeorm";
 import { DefaultFeatureRule } from "./rules/default-rule.entity";
 import { WhitelistFeatureRule } from "./rules/whitelist-rule.entity";
 import {
@@ -139,5 +139,39 @@ export class FeatureRulesService {
     const onetimeFeatureRule = await this.onetimeFeatureRuleRepository.findOne(onetimeFeatureRuleId)
 
     return [defaultFeatureRule, whitelistFeatureRule, onetimeFeatureRule];
+  }
+
+  async getFeatureFlagAccessForUser(featureFlagId: number, user: string) {
+    const {
+      defaultFeatureRuleId,
+      whitelistFeatureRuleId,
+      onetimeFeatureRuleId,
+    } = await this.featureFlagRepository.findOne(featureFlagId);
+
+    const onetimeFeatureRule = await this.onetimeFeatureRuleRepository.findOne(onetimeFeatureRuleId)
+
+    if (onetimeFeatureRule.enabled) {
+      const blocked = onetimeFeatureRule.blocked.includes(user);
+      if (blocked) return false;
+
+      const payload = [...onetimeFeatureRule.blocked, user];
+      await this.onetimeFeatureRuleRepository.update(
+        { id: onetimeFeatureRuleId },
+        { blocked: payload },
+      );
+
+      return true;
+    }
+
+    const whitelistFeatureRule = await this.whitelistFeatureRuleRepository.findOne(whitelistFeatureRuleId)
+    if (whitelistFeatureRule.enabled) {
+      if (whitelistFeatureRule.onList.includes(user)) return true;
+      if (whitelistFeatureRule.offList.includes(user)) return false;
+    }
+
+    const defaultFeatureRule = await this.defaultFeatureRuleRespository.findOne(defaultFeatureRuleId)
+    if (defaultFeatureRule.enabled) return true;
+
+    return false;
   }
 }
