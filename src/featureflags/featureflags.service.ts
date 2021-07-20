@@ -23,4 +23,8 @@ export class FeatureFlagsService {
     await this.featureFlagsRepository.save(newFeatureFlag);
     return newFeatureFlag;
   }
+
+  async getFeatureFlags() {
+    return this.featureFlagsRepository.find();
+  }
 }

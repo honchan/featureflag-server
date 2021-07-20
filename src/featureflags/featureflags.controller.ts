@@ -17,14 +17,18 @@ export class FeatureFlagsController {
     private readonly featureRulesService: FeatureRulesService,
   ) {}
 
+  @Get()
+  getFeatureFlags() {
+    return this.featureFlagsService.getFeatureFlags();
+  }
 
   @Get(':id/featurerules')
-  async getFeatureRules(@Param('id') id: string) {
+  getFeatureRules(@Param('id') id: string) {
     return this.featureRulesService.getFeatureRules(parseInt(id));
   }
 
   @Get(':id')
-  async getFeatureFlagAccessForUser(
+  getFeatureFlagAccessForUser(
     @Param('id') id: string,
     @Query('user') user: string,
   ) {
