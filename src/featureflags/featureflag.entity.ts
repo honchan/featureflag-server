@@ -20,11 +20,11 @@ export class FeatureFlag {
   @Expose()
   public description: string;
 
-  @ManyToOne(
-    () => Organisation,
-    (organisation: Organisation) => organisation.featureFlags,
-  )
-  public organisation: number;
+  // @ManyToOne(
+  //   () => Organisation,
+  //   (organisation: Organisation) => organisation.featureFlags,
+  // )
+  // public organisation: number;
 
   @Column({ name: 'default_feature_rule_id' })
   defaultFeatureRuleId: number;
