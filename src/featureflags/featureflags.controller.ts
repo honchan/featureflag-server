@@ -1,4 +1,17 @@
-import { Controller, Post, Body, Put, Param, HttpCode, Query, Get, SerializeOptions, HttpException, HttpStatus } from "@nestjs/common";
+import {
+  Controller,
+  Post,
+  Body,
+  Put,
+  Param,
+  HttpCode,
+  Query,
+  Get,
+  SerializeOptions,
+  HttpException,
+  HttpStatus,
+  Delete,
+} from '@nestjs/common';
 import { FeatureRulesService } from "src/featurerules/featurerules.service";
 import { CreateFeatureFlagDto } from "./dto/createFeatureFlag.dto";
 import { FeatureFlagsService } from "./featureflags.service";
@@ -16,6 +29,12 @@ export class FeatureFlagsController {
     private readonly featureFlagsService: FeatureFlagsService,
     private readonly featureRulesService: FeatureRulesService,
   ) {}
+
+  @Delete(':id')
+  deleteFeatureFlag(@Param('id') id: string) {
+    this.featureFlagsService.deleteFeatureFlag(parseInt(id));
+    this.featureRulesService.deleteFeatureRulesForFeatureFlag(parseInt(id));
+  }
 
   @Get()
   getFeatureFlags() {

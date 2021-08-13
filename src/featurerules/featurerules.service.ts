@@ -174,4 +174,16 @@ export class FeatureRulesService {
 
     return false;
   }
+
+  async deleteFeatureRulesForFeatureFlag(featureFlagId: number) {
+    const {
+      defaultFeatureRuleId,
+      whitelistFeatureRuleId,
+      onetimeFeatureRuleId,
+    } = await this.featureFlagRepository.findOne(featureFlagId);
+
+    await this.defaultFeatureRuleRespository.delete(defaultFeatureRuleId);
+    await this.whitelistFeatureRuleRepository.delete(whitelistFeatureRuleId);
+    await this.onetimeFeatureRuleRepository.delete(onetimeFeatureRuleId);
+  }
 }
