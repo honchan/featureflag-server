@@ -27,4 +27,8 @@ export class FeatureFlagsService {
   async getFeatureFlags() {
     return this.featureFlagsRepository.find();
   }
+
+  async deleteFeatureFlag(id: number) {
+    await this.featureFlagsRepository.delete(id);
+  }
 }
