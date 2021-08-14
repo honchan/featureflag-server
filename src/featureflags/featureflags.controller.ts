@@ -88,10 +88,16 @@ export class FeatureFlagsController {
     @Param('id') id: string,
     @Body() updateWhitelistFeatureRuleDto: UpdateWhitelistFeatureRuleDto,
   ) {
-    await this.featureRulesService.updateWhitelistFeatureRule(
-      updateWhitelistFeatureRuleDto,
-      parseInt(id),
-    );
+    try {
+      await this.featureRulesService.updateWhitelistFeatureRule(
+        updateWhitelistFeatureRuleDto,
+        parseInt(id),
+      );
+    } catch (error) {
+      if (error.message === 'SAME_PRIORITY_ENABLED') {
+        throw new HttpException('Can not enable both Whitelist and Onetime rule', HttpStatus.FORBIDDEN);
+      }
+    }
   }
 
   @Put(':id/onetime')
@@ -102,11 +108,16 @@ export class FeatureFlagsController {
     @Query('reset') reset: string,
   ) {
     const shouldReset = reset === 'true';
-    console.log('on etime controller')
-    await this.featureRulesService.updateOnetimeFeatureRule(
-      updateOnetimeFeatureRuleDto,
-      parseInt(id),
-      shouldReset,
-    );
+    try {
+      await this.featureRulesService.updateOnetimeFeatureRule(
+        updateOnetimeFeatureRuleDto,
+        parseInt(id),
+        shouldReset,
+      );
+    } catch (error) {
+      if (error.message === 'SAME_PRIORITY_ENABLED') {
+        throw new HttpException('Can not enable both Whitelist and Onetime rule', HttpStatus.FORBIDDEN);
+      }
+    }
   }
 }

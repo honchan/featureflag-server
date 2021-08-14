@@ -90,7 +90,14 @@ export class FeatureRulesService {
     updateWhitelistFeatureRuleDto: UpdateWhitelistFeatureRuleDto,
     featureFlagId: number,
   ) {
-    const { whitelistFeatureRuleId } = await this.featureFlagRepository.findOne(featureFlagId);
+    const { whitelistFeatureRuleId, onetimeFeatureRuleId } = await this.featureFlagRepository.findOne(featureFlagId);
+
+    if (updateWhitelistFeatureRuleDto.enabled) {
+      const onetimeFeatureRule = await this.onetimeFeatureRuleRepository.findOne(onetimeFeatureRuleId)
+      if (onetimeFeatureRule.enabled) {
+        throw new Error('SAME_PRIORITY_ENABLED')
+      }
+    }
 
     const uniqueOnList = updateWhitelistFeatureRuleDto
       ? [...new Set(updateWhitelistFeatureRuleDto.onList)]
@@ -114,7 +121,14 @@ export class FeatureRulesService {
     featureFlagId: number,
     reset: boolean,
   ) {
-    const { onetimeFeatureRuleId } = await this.featureFlagRepository.findOne(featureFlagId);
+    const { onetimeFeatureRuleId, whitelistFeatureRuleId } = await this.featureFlagRepository.findOne(featureFlagId);
+
+    if (updateOnetimeFeatureRuleDto.enabled) {
+      const whitelistFeatureRule = await this.whitelistFeatureRuleRepository.findOne(whitelistFeatureRuleId)
+      if (whitelistFeatureRule.enabled) {
+        throw new Error('SAME_PRIORITY_ENABLED')
+      }
+    }
 
     const payload = {
       ...updateOnetimeFeatureRuleDto,
